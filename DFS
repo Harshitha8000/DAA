@@ -1,0 +1,39 @@
+#include<stdio.h>
+int n,vis[20],a[20][20];
+void dfs(int v)
+{
+	int i,j;
+	vis[v]=1;
+	printf("%d->",v);
+	for(j=1;j<=n;j++){
+		if(a[v][j]==1&&vis[j]==0)
+			dfs(j);
+}
+}
+int main()
+{
+	int i,j,v;
+	printf("enter no. of vertices:");
+	scanf("%d",&n);
+	printf("enter adjacency matrix:\n");
+	for(i=1;i<=n;i++)
+	for(j=1;j<=n;j++)
+	scanf("%d",&a[i][j]);
+	for(i=1;i<=n;i++)
+	vis[i]=0;
+	printf("enter source vertex:");
+	scanf("%d",&v);
+	dfs(v);
+}
+INPUT:
+enter no. of vertices:6
+enter adjacency matrix:
+0 1 1 1 0 0
+1 0 1 0 1 0
+1 1 0 1 1 1
+1 0 1 0 0 1
+0 1 1 0 0 0
+0 0 1 1 0 0
+enter source vertex:1
+OUTPUT:
+1->2->3->4->6->5->
