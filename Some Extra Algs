@@ -1,0 +1,441 @@
+//ARTICULATION POINTS//
+#include<stdio.h>
+void articulation(int u,int v);
+int min(int i,int j);
+int cost[20][20],l[20],dfn[20],n,num=1,temp[20];
+int main()
+{
+    int i,j;
+    printf("Enter Number of Vertices:");
+    scanf("%d",&n);
+    printf("Enter the cost adjacency matrix:");
+    for(i=1;i<=n;i++)
+      for(j=1;j<=n;j++)
+        scanf("%d",&cost[i][j]);
+    for(i=1;i<=n;i++)
+    {
+        temp[i]=0;
+        dfn[i]=0;
+    }
+    articulation(1,0);
+}
+int min(int i,int j)
+{
+    if(i>j)
+      return j;
+    else
+      return i;
+}
+void articulation(int u,int v)
+{
+    int w,i,j=0,flag=0;
+    dfn[u]=num;
+    l[u]=num;
+    num++;
+    for(w=1;w<=n;w++)
+    {
+        if(cost[u][w]==1)
+        {
+            if(dfn[w]==0)
+            {
+                art(w,u);
+                l[u]=min(l[u],l[w]);
+                if(l[w]>=dfn[u] && u!=1)
+                {
+                    for(i=1;i<=n;i++)
+                    {
+                        if(temp[i]==u)
+                          flag=1;
+                    }
+                    if(flag==0)
+                    {
+                      printf("\nArticulation Point = %d",u);
+                      temp[++j]=u;
+                    }
+                }
+            }
+            else if(w!=v)
+               l[u]=min(l[u],dfn[w]);
+        }
+    }
+}
+
+
+
+
+
+//BREADTH FIRST SEARCH//
+#include<stdio.h>
+int front=-1,rear=-1,q[20];
+void bfs(int v,int G[20][20],int n);
+void enque(int x)
+{
+    if (front==-1)
+    {
+        front=rear=0;
+    }
+    else
+        ++rear;
+    q[rear]=x;
+}
+int deque()
+{
+    int x=q[front];
+    if(front==rear)
+    {
+        front=rear=-1;
+    }
+    else
+        ++front;
+    return x;
+}
+int main()
+{
+    int n,G[20][20],v,i,j;
+    printf("Enter the no.of vertices:\n");
+    scanf("%d",&n);
+    printf("Enter the adjacency matrix:\n");
+    for(i=1;i<=n;i++)
+    {
+        for(j=1;j<=n;j++)
+        {
+            scanf("%d",&G[i][j]);
+        }
+    }
+    printf("Enter the starting vertex:\n");
+    scanf("%d",&v);
+    printf("The bfs of graph:\n");
+    bfs(v,G,n);
+    return 0;
+}
+void bfs(int v,int G[20][20],int n)
+{
+    int visited[20],i,j,u;
+    for(i=1;i<=n;i++)
+        visited[i]=0;
+    u=v;
+    visited[u]=1;
+    printf("%d->",u);
+    while(1)
+    {
+        for(i=1;i<=n;i++)
+        {
+            if(G[u][i]==1 && visited[i]==0)
+            {
+                enque(i);
+                visited[i]=1;
+               
+            }
+        }
+   
+        if(front==-1)
+            return ;
+        else
+        {
+            u=deque();
+            printf("%d->",u);
+        }
+       
+    }
+   
+}
+
+
+
+
+
+//BICONNECTED COMPONENTS//
+#include<stdio.h>
+int cost[20][20],l[20],dfn[20],s[20],n,top=-1,num=1;
+void push(int i,int j)
+{
+    s[++top]=i;
+    s[++top]=j;
+}
+int pop()
+{
+    return s[top--];
+}
+int min(int i,int j)
+{
+    if(i>j)
+      return j;
+    else
+      return i;
+}
+void biconnect(int u,int v)
+{
+    int w,x,y;
+    dfn[u]=num;
+    l[u]=num;
+    num++;
+    for(w=1;w<=n;w++)
+    {
+        if(cost[u][w]==1)
+        {
+            if(v!=w && dfn[w]<=dfn[u])
+              push(u,w);
+            if(dfn[w]==0)
+            {
+                biconnect(w,u);
+                if(l[w]>=dfn[u])
+                {
+                    printf("\nNew Component:\n");
+                    do
+                    {
+                       x=pop();
+                       y=pop();
+                       printf("(%d,%d)",x,y);
+                    }while(!((x==u && y==w)||(x==w &&y==u)));
+                }
+                l[u]=min(l[u],l[w]);
+            }
+            else if(w!=v)
+            {
+                l[u]=min(l[u],dfn[w]);
+            }
+        }
+    }
+}
+int main()
+{
+    int i,j;
+    printf("Enter Number of Verices:");
+    scanf("%d",&n);
+    printf("Enter the cost adjacency matrix:");
+    for(i=1;i<=n;i++)
+      for(j=1;j<=n;j++)
+        scanf("%d",&cost[i][j]);
+    biconnect(1,0);
+}
+
+
+
+
+
+//DEPTH FIRST SEARCH//
+#include <stdio.h>
+void dfs(int n,int v,int adj[20][20],int visited[20]);
+int main()
+{
+    int adj[20][20],n,v,i,j,visited[20];
+    printf("enter the number of vertices:");
+    scanf("%d",&n);
+    printf("\ninitial vertex:");
+    scanf("%d",&v);
+    printf("\nenter matrix:");
+    for(i=1;i<=n;i++)
+    for(j=1;j<=n;j++)
+    scanf("%d",&adj[i][j]);
+    for(i=1;i<=n;i++)
+    visited[i]=0;
+    printf("DFS travarsal:");
+    dfs(n,v,adj,visited);
+}
+void dfs(int n,int v,int adj[20][20],int visited[20])
+{
+    int w;
+    visited[v]=1;
+    printf("%d->",v);
+    for(w=1;w<=n;w++)
+    {
+        if(adj[v][w]==1&&visited[w]==0)
+        dfs(n,w,adj,visited);
+    }         
+}
+
+
+
+
+
+
+//DIJKSTRAS//
+#include <stdio.h>
+void path(int cost[20][20],int n,int v,int dis[20]);
+int main()
+{
+    int cost[20][20],n,dis[20],v,i,j;
+    printf("\nenter number of vertices:");
+    scanf("%d",&n);
+    printf("\n enter the initial vertex: ");
+    scanf("%d",&v);
+    printf("\n enter cost adj matrix:");
+    for(i=1;i<=n;i++)
+      for(j=1;j<=n;j++)
+      scanf("%d",&cost[i][j]);
+    path(cost,n,v,dis);
+}
+void path(int cost[20][20],int n,int v,int dis[20])
+{
+    int s[20],i,j,u,w,min,x;
+    for(i=1;i<=n;i++)
+    {
+        s[i]=0;
+        dis[i]=cost[v][i];
+    }
+    s[v]=1;
+    dis[v]=0;
+    for(x=2;x<=n;x++)
+    {
+        min=9999;
+        for(j=1;j<=n;j++)
+        {
+            if(dis[j]<min && s[j]==0)
+            {
+                min=dis[j];
+                u=j;
+            }
+        }
+        s[u]=1;
+            for(w=1;w<=n;w++)
+            {
+                if(s[w]==0 && dis[w]>(dis[u]+cost[u][w]))
+                dis[w]=dis[u]+cost[u][w];
+            }
+    }
+    printf("\n distance array is:");
+    for(i=1;i<=n;i++)
+    printf("%d\t",dis[i]);
+}
+
+
+
+
+
+
+
+//JSN PROGRAM//
+#include<stdio.h>
+void job(int[],int[],int);
+int main(){
+int n,temp,i;
+printf("Enter the no of Jobs\n");
+scanf("%d",&n);
+int d[n+1],p[n+1];
+printf("Enter the profits of doing each Job\n");
+for(i=1;i<=n;i++)
+scanf("%d",&p[i]);
+printf("Enter the dead lines\n");
+for(i=1;i<=n;i++)
+scanf("%d",&d[i]);
+for(int i=1;i<=n;i++){
+for(int j=i+1;j<=n;j++){
+if(p[i]<p[j]){
+temp=p[i];
+p[i]=p[j];
+p[j]=temp;
+temp=d[i];
+d[i]=d[j];
+d[j]=temp;
+}
+  }
+    }
+job(d,p,n);
+}
+void job(int d[],int p[],int n){
+int J[n+1],k,r,pro=0;
+d[0]=0;
+J[0]=0;
+J[1]=1;
+    k=1;
+for(int i=2;i<=n;i++){
+        r=k;
+while(d[J[r]]>d[i]&&d[J[r]]!=r)
+            r=r-1;
+if(d[J[r]]<=d[i]&&d[i]>r){
+for(int j=k;j>=r+1;j--)
+J[j+1]=J[j];
+            J[r+1]=i;
+            k=k+1;
+        }
+    }
+printf("The no of Jobs Selected are:%d\n",k);
+for(int i=1;i<=k;i++){
+	pro=pro+p[J[i]];
+	printf("%d\t",J[i]);
+    }
+printf("\nMax profit=%d",pro);
+}
+
+
+
+
+
+
+
+//KNAPSACK//
+#include<stdio.h>
+void knapsack(int cap,int n,float p[10],float w[10]);
+  int main()
+  {
+    int i,j,cap,n;
+    float temp;
+    float p[10],w[10];
+    float r[10];   
+    printf("enter cap and number of obj:");   
+    scanf("%d%d",&cap,&n);
+    printf("enter profits and weights:"); 
+    for(i=0;i<n;i++)  
+      scanf("%f%f",&p[i],&w[i]);
+    printf("\nbprofits-\t");
+    for(i=0;i<n;i++)
+      printf("%f\t",p[i]);
+    printf("\nbweights:\t");
+    for(i=0;i<n;i++)
+      printf("%f\t",w[i]);
+    for(i=0;i<n;i++)
+      r[i]=p[i]/w[i];
+     printf("\nratio:");
+    for(i=0;i<n;i++)
+      printf("%f\t",r[i]);
+    for(i=0;i<n;i++)
+       for(j=i+1;j<n;j++)
+          if(r[i]<r[j]){
+             temp=r[i];
+          r[i]=r[j];
+     r[j]=temp;
+     temp=p[i];
+     p[i]=p[j];
+     p[j]=temp;
+     temp=w[i];
+     w[i]=w[j];
+     w[j]=temp;
+     }
+     printf("\nsratio:");
+for(i=0;i<n;i++)
+printf("%f\t",r[i]);
+     printf("\nsprofits-\t");
+for(i=0;i<n;i++)
+printf("%f\t",p[i]);
+printf("\nsweights:\t");
+for(i=0;i<n;i++)
+printf("%f\t",w[i]);
+knapsack(cap,n,p,w);
+}
+void knapsack(int cap,int n,float p[ ],float w[ ])
+{
+float sol[10]={0};
+int u;
+float result=0.0;
+int i;
+u=cap;
+for(i=0;i<n;i++)
+{
+if(w[i]>u)
+break;
+sol[i]=1;
+u=u-w[i];
+}
+if(i<=n)
+sol[i]=u/w[i];
+printf("\nsol set:\t");
+for(i=0;i<n;i++)
+printf("%f\t",sol[i]);
+    
+for(i=0;i<n;i++)
+    
+result=result+(p[i]*sol[i]);
+    
+printf("\nresult=%f",result);
+
+}
