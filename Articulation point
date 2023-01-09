@@ -1,0 +1,55 @@
+#include<stdio.h>
+int n,a[20][20],num=1,dfn[20],l[20];
+int min(int a,int b)
+{
+	if(a<b)
+	return a;
+	else
+	return b;
+}
+void art(int u,int v)
+{
+	int i,w;
+	dfn[u]=num;
+	l[u]=num;
+	num++;
+	for(w=1;w<=n;w++)
+	{
+		if(a[u][w]!=0)
+		{
+			if(dfn[w]==0)
+			{
+				art(w,u);
+				l[u]=min(l[u],l[w]);
+				if((l[w]>=dfn[u])&&u!=1)
+				printf("articulation point:%d",u);
+			}
+			else if(w!=v)
+			l[u]=min(l[u],dfn[w]);
+		}
+	}	
+}
+int main()
+{
+	int i,j;
+	printf("enter n value:");
+	scanf("%d",&n);
+	printf("enter adjacency matrix:\n");
+	for(i=1;i<=n;i++)
+	for(j=1;j<=n;j++)
+	scanf("%d",&a[i][j]);
+	for(i=1;i<=n;i++)
+	dfn[i]=0;
+	art(1,0);
+}
+
+INPUT:
+enter n value:4
+enter adjacency matrix:
+0 1 1 0
+1 0 1 1
+1 1 0 0
+0 1 0 0
+OUTPUT:
+articulation point:2
+
