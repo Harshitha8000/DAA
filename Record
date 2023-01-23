@@ -1,0 +1,284 @@
+lab-1
+----------------
+1)
+
+#include <stdio.h>
+#include <stdlib.h>
+struct ListNode
+{
+    int val;
+    struct ListNode *next;
+};
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2){
+
+    if(list1==NULL)
+    {
+        return list2;
+    }
+    else if(list2==NULL)
+    {
+        return list1;
+    }
+    else if(list1->val <= list2->val)
+    {
+        list1->next=mergeTwoLists(list1->next,list2);
+        return list1;
+    }
+    else
+    {
+        list2->next=mergeTwoLists(list1,list2->next);
+        return list2;
+    }
+}
+struct ListNode* create(struct ListNode* first)
+{
+    struct ListNode *new, *prev;
+    int x;
+    printf("enter data , enter -1 to stop : ");
+    scanf("%d",&x);
+    while(x!=-1)
+    {
+        new = (struct ListNode*)malloc(sizeof(struct ListNode));
+        new->val = x;
+        new->next = NULL;
+        if(first == NULL)
+        {
+            first = new;
+            prev = new;
+        }
+        else
+        {
+            prev->next = new;
+            prev = new;
+        }
+        printf("enter data : ");
+        scanf("%d",&x);
+    }
+    return first;
+}
+void display(struct ListNode *first)
+{
+    struct ListNode* temp;
+    temp=first;
+    if(first == NULL)
+    {
+        printf("[]");
+    }
+    else
+    {
+        printf("[");
+        while(temp!=NULL)
+        {
+            printf("%d",temp->val);
+            temp=temp->next;
+        }
+        printf("]");
+    }
+}
+void main()
+{
+    struct ListNode *l1=NULL, *l2=NULL, *k;
+    printf("enter list1 : \n");
+    l1=create(l1);
+    printf("enter list2 : \n");
+    l2=create(l2);
+    k=mergeTwoLists(l1,l2);
+    display(k);
+}
+-------------------------------------------------
+2)
+#include <stdlib.h>
+#include <stdio.h>
+
+void merge(int* num1, int num1size, int m, int* num2, int num2size, int n)
+{
+    int i=m-1;
+    int j=n-1;
+    while(i>=0 & j>=0)
+    {
+        if(num1[i]>num2[j])
+        {
+            num1[i+j+1]=num1[i];
+            i=i-1;
+        }
+        else
+        {
+            num1[i+j+1]=num2[j];
+            j=j-1;
+        }
+    }
+    while(j>=0)
+    {
+        num1[i+j+1]=num2[j];
+        j=j-1;
+    }
+}
+int main()
+{
+    int m,n;
+    printf("enter no. of elements in num1 : ");
+    scanf("%d",&m);
+    printf("enter no. of elements in num2 : ");
+    scanf("%d",&n);
+    int num1[m+n], num2[n];
+    printf("enter elements in num1 : ");
+    for(int i=0; i<m; i++)
+    {
+        scanf("%d",&num1[i]);
+    }
+    printf("enter elements in num2 : ");
+    for(int j=0;j<n;j++)
+    {
+        scanf("%d",&num2[j]);
+    }
+    merge(&num1[0],sizeof(num1)/sizeof(int),m,&num2[0],sizeof(num2)/sizeof(int),n);
+    printf("[");
+    for(int k=0;k<m+n;k++)
+    {
+        printf("%d",num1[k]);
+    }
+    printf("]");
+}
+-------------------------------------------------
+3)#include <stdlib.h>
+#include <stdio.h>
+
+struct ListNode
+{
+    int val;
+    struct ListNode *next;
+};
+struct ListNode* create(struct ListNode* head)
+{
+    struct ListNode *new, *prev;
+    int x;
+    printf("enter data , enter -1 to stop : ");
+    scanf("%d",&x);
+    while(x!=-1)
+    {
+        new = (struct ListNode*)malloc(sizeof(struct ListNode));
+        new->val = x;
+        new->next = NULL;
+        if(head == NULL)
+        {
+            head = new;
+            prev = new;
+        }
+        else
+        {
+            prev->next = new;
+            prev = new;
+        }
+        printf("enter data : ");
+        scanf("%d",&x);
+    }
+    return head;
+}
+struct ListNode* mergeSort(struct ListNode* l1, struct ListNode* l2)
+{
+    if(l1==NULL && l2==NULL)
+    {
+        return NULL;
+    }
+    else if(l1==NULL)
+    {
+        return l2;
+    }
+    else if(l2==NULL)
+    {
+        return l1;
+    }
+    else
+    {
+        struct ListNode *l3=(struct ListNode*)malloc(sizeof(struct ListNode));
+        struct ListNode *temp1 = l1, *temp2=l2;
+        struct ListNode *res=l3;
+        if(temp1->val = temp2->val)
+        {
+            l3->val=temp1->val;
+            temp1=temp1->next;
+        }
+        else
+        {
+            l3->val = temp2->val;
+            temp2 = temp2->next;
+        }
+        while(temp1!=NULL && temp2!=NULL)
+        {
+            if(temp1->val <= temp2->val)
+            {
+                res->next = temp1;
+                res = temp1;
+                temp1 = temp1->next;
+            }
+            else
+            {
+                res->next = temp2;
+                res = temp2;
+                temp2 = temp2->next;
+            }
+        }
+        if(temp1!=NULL)
+        {
+            while(temp1!=NULL)
+            {
+                res->next = temp1;
+                res = temp1;
+                temp1 = temp1->next;
+            }
+        }
+        if(temp2!=NULL)
+        {
+            while(temp2!=NULL)
+            {
+                res->next=temp2;
+                res=temp2;
+                temp2=temp2->next;
+            }
+        }
+        return l3;
+    }
+}
+struct ListNode* mergeKLists(struct ListNode** Lists, int ListSize)
+{
+    if(ListSize==0)
+    {
+        return NULL;
+    }
+    else
+    {
+        struct ListNode* res = Lists[0];
+        for(int m=1; m<ListSize;m++)
+        {
+            res=mergeSort(res, Lists[m]);
+        }
+        return res;
+    }
+}
+void display(struct ListNode *head)
+{
+    struct ListNode* temp=head;
+    printf("[");
+    while(temp!=NULL)
+    {
+        printf(" %d,",temp->val);
+        temp=temp->next;
+    }
+    printf("]");
+}
+void main()
+{
+    int ListSize;
+    printf("enter no of lists : ");
+    scanf("%d",&ListSize);
+    struct ListNode *Lists[ListSize];
+    struct ListNode *temp, *res;
+    for(int k=0;k<ListSize;k++)
+    {
+        temp = NULL;
+        temp=create(temp);
+        Lists[k]=temp;
+    }
+    res=mergeKLists(Lists,ListSize);
+    display(res);
+}
